@@ -1,3 +1,4 @@
+#include "../../brick_game/colors.h"
 #include "frontend.h"
 #define REFRESH_RATE 60
 

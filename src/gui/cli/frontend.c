@@ -1,5 +1,6 @@
 #include "frontend.h"
 
+#include "../../brick_game/colors.h"
 #include "game_field.h"
 #include "input.h"
 #include "menus.h"
@@ -87,13 +88,13 @@ void initColors() {
   start_color();
   init_pair(Static, BACKGROUND_COLOR, COLOR_WHITE);
   init_pair(Damaged, BACKGROUND_COLOR, COLOR_WHITE);
-  init_pair(Color_1, BACKGROUND_COLOR, COLOR_RED);
-  init_pair(Color_2, BACKGROUND_COLOR, COLOR_MAGENTA);
-  init_pair(Color_3, BACKGROUND_COLOR, COLOR_GREEN);
-  init_pair(Color_4, BACKGROUND_COLOR, COLOR_MAGENTA);
-  init_pair(Color_5, BACKGROUND_COLOR, COLOR_YELLOW);
-  init_pair(Color_6, BACKGROUND_COLOR, COLOR_YELLOW);
-  init_pair(Color_7, BACKGROUND_COLOR, COLOR_BLUE);
+  init_pair(Red, BACKGROUND_COLOR, COLOR_RED);
+  init_pair(Magenta, BACKGROUND_COLOR, COLOR_MAGENTA);
+  init_pair(Green, BACKGROUND_COLOR, COLOR_GREEN);
+  init_pair(Cyan, BACKGROUND_COLOR, COLOR_BLUE);
+  init_pair(Yellow, BACKGROUND_COLOR, COLOR_YELLOW);
+  init_pair(Orange, BACKGROUND_COLOR, COLOR_YELLOW);
+  init_pair(Blue, BACKGROUND_COLOR, COLOR_BLUE);
 }
 
 void error(Controls_t* ctrls) {

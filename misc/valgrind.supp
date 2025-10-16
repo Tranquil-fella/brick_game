@@ -1,0 +1,54 @@
+{
+   glib_suppressions
+   Memcheck:Leak
+   ...
+   fun:g_malloc
+   fun:g_realloc  
+   obj:/usr/lib/x86_64-linux-gnu/libglib-2.0.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libgobject-2.0.so.*
+}
+
+{
+   ld_suppressions
+   Memcheck:Leak
+   ...
+   fun:malloc
+   fun:calloc
+   obj:/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.*
+}
+
+{
+   dlopen_suppressions  
+   Memcheck:Leak
+   ...
+   fun:dlopen*
+   obj:/usr/lib/x86_64-linux-gnu/libc.so.*
+}
+
+{
+   ncurses_strdup
+   Memcheck:Leak
+   ...
+   fun:strdup
+   obj:/usr/lib/x86_64-linux-gnu/libncurses.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.*
+}
+
+{
+   ncurses_tsearch
+   Memcheck:Leak
+   ...
+   fun:tsearch
+   obj:/usr/lib/x86_64-linux-gnu/libncurses.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.*
+}
+
+{
+   ncurses_mem_pool
+   Memcheck:Leak
+   ...
+   fun:*alloc
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libncurses.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.*
+}

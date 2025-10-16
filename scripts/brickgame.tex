@@ -1,0 +1,541 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{fancyvrb}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{tcolorbox}
+
+% Define colors for code listings
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    frame=single
+}
+
+\lstset{style=mystyle}
+
+% Custom boxes for notes and warnings
+\newtcolorbox{notebox}{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=Note,
+    sharp corners
+}
+
+\newtcolorbox{warningbox}{
+    colback=red!5!white,
+    colframe=red!75!black,
+    title=Warning,
+    sharp corners
+}
+
+\title{BrickGame Documentation}
+\author{BrickGame Development Team}
+\date{Version 1.0 \\ \today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document provides comprehensive documentation for the BrickGame project, including installation instructions, build procedures, project structure, dependency management, and usage guidelines. BrickGame is a classic brick game implementation featuring both terminal-based (CLI) and desktop graphical interfaces.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+BrickGame is a modern implementation of classic brick games built using C++20. The project features modular architecture with separate game libraries and multiple user interfaces including Qt-based desktop GUI and ncurses-based CLI.
+
+\section{System Requirements}
+
+\subsection{Prerequisites}
+\begin{itemize}
+    \item \textbf{CMake} 3.16 or higher
+    \item \textbf{C++ Compiler} with C++20 support (GCC 10+, Clang 10+, or MSVC 2019+)
+    \item \textbf{Build System}: Make or Ninja
+    \item \textbf{Linux Distribution}: Ubuntu/Debian, Fedora/RHEL, or Arch Linux
+\end{itemize}
+
+\section{Dependencies}
+
+\subsection{Core Dependencies}
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Dependency} & \textbf{Purpose} \\
+\hline
+GTest & Google Test framework for unit testing \\
+\hline
+Check & Check unit testing framework (alternative) \\
+\hline
+Subunit & Test reporting protocol \\
+\hline
+Ncurses & Terminal UI library for CLI interface \\
+\hline
+Menu & Ncurses extension for menu handling \\
+\hline
+Qt5/Qt6 & GUI framework for desktop interface \\
+\hline
+SFML & Simple and Fast Multimedia Library (if used) \\
+\hline
+X11 & X Window System development libraries \\
+\hline
+\end{tabularx}
+
+\subsection{Installation by Linux Distribution}
+
+\subsubsection{Ubuntu/Debian}
+\begin{lstlisting}[language=bash]
+# Core build tools
+sudo apt update
+sudo apt install build-essential cmake ninja-build pkg-config
+
+# Testing frameworks
+sudo apt install libgtest-dev libgmock-dev googletest
+sudo apt install check libsubunit-dev
+
+# CLI dependencies (ncurses)
+sudo apt install libncurses5-dev libncursesw5-dev libmenu-cache-dev
+
+# Qt dependencies
+sudo apt install qt6-base-dev qt6-tools-dev-tools  # For Qt6
+# OR for Qt5:
+sudo apt install qt5-default qtbase5-dev qttools5-dev-tools
+
+# Optional: SFML for alternative GUI
+sudo apt install libsfml-dev
+
+# X11 development libraries
+sudo apt install libx11-dev libxrandr-dev libxext-dev
+\end{lstlisting}
+
+\subsubsection{Fedora/RHEL/CentOS}
+\begin{lstlisting}[language=bash]
+# Core build tools
+sudo dnf groupinstall "Development Tools"
+sudo dnf install cmake ninja-build pkgconfig
+
+# Testing frameworks
+sudo dnf install gtest-devel gmock-devel
+sudo dnf install check-devel subunit-devel
+
+# CLI dependencies
+sudo dnf install ncurses-devel
+
+# Qt dependencies
+sudo dnf install qt6-qtbase-devel qt6-tools-devel  # For Qt6
+# OR for Qt5:
+sudo dnf install qt5-qtbase-devel qt5-tools-devel
+
+# Optional: SFML
+sudo dnf install SFML-devel
+
+# X11 libraries (usually included in development tools)
+sudo dnf install libX11-devel libXrandr-devel libXext-devel
+\end{lstlisting}
+
+\subsubsection{Arch Linux/Manjaro}
+\begin{lstlisting}[language=bash]
+# Core build tools
+sudo pacman -S base-devel cmake ninja pkg-config
+
+# Testing frameworks
+sudo pacman -S gtest gmock
+sudo pacman -S check subunit
+
+# CLI dependencies
+sudo pacman -S ncurses
+
+# Qt dependencies
+sudo pacman -S qt6-base qt6-tools  # For Qt6
+# OR for Qt5:
+sudo pacman -S qt5-base qt5-tools
+
+# Optional: SFML
+sudo pacman -S sfml
+
+# X11 libraries (usually installed with base-devel)
+sudo pacman -S libx11 libxrandr libxext
+\end{lstlisting}
+
+\subsection{Dependency Troubleshooting}
+
+\subsubsection{Common Dependency Issues}
+
+\begin{warningbox}
+\textbf{GTest Not Found}: If CMake cannot find GTest, you may need to build it from source:
+\end{warningbox}
+
+\begin{lstlisting}[language=bash]
+# On Ubuntu/Debian if GTest is not properly installed
+sudo apt install libgtest-dev
+cd /usr/src/gtest
+sudo cmake CMakeLists.txt
+sudo make
+sudo cp lib/*.a /usr/lib
+\end{lstlisting}
+
+\begin{warningbox}
+\textbf{Qt Not Found}: Ensure the correct Qt version is installed and QTDIR is set:
+\end{warningbox}
+
+\begin{lstlisting}[language=bash]
+# Check available Qt versions
+qtchooser -list-versions
+
+# Set default Qt version (on Ubuntu)
+sudo update-alternatives --config qtchooser
+
+# Verify Qt installation
+qmake --version
+\end{lstlisting}
+
+\begin{warningbox}
+\textbf{Ncurses Development Files Missing}: Install both runtime and development packages:
+\end{warningbox}
+
+\begin{lstlisting}[language=bash]
+# Ubuntu/Debian
+sudo apt install libncurses5-dev libncursesw5-dev
+
+# Fedora/RHEL
+sudo dnf install ncurses-devel
+
+# Arch Linux
+sudo pacman -S ncurses
+\end{lstlisting}
+
+\subsubsection{Verifying Dependencies}
+\begin{lstlisting}[language=bash]
+# Check if dependencies are available
+pkg-config --list-all | grep -E "(Qt|ncurses|check|gtest)"
+
+# Verify compiler can find headers
+echo '#include <ncurses.h>' | gcc -E - >/dev/null
+echo '#include <gtest/gtest.h>' | g++ -E - >/dev/null
+echo '#include <check.h>' | gcc -E - >/dev/null
+\end{lstlisting}
+
+\section{Installation}
+
+\subsection{Obtaining the Source Code}
+\begin{lstlisting}[language=bash]
+# Clone the repository
+git clone <repository-url>
+cd BrickGame
+\end{lstlisting}
+
+\subsection{Building from Source}
+
+\subsubsection{Standard Build Process}
+\begin{lstlisting}[language=bash]
+# Build release version (recommended for end users)
+make release
+
+# Build debug version with sanitizers
+make debug
+
+# Build with tests
+make test
+\end{lstlisting}
+
+\subsubsection{Advanced Build Options}
+\begin{lstlisting}[language=bash]
+# Configure with custom options
+cmake -B build -DBUILD_DESKTOP_GUI=ON -DBUILD_CLI_GUI=ON -DBUILD_TESTS=OFF
+
+# Build using Ninja for faster compilation
+cmake -B build -G Ninja
+ninja -C build
+
+# Build with specific Qt version
+cmake -B build -DQT_VERSION=6
+\end{lstlisting}
+
+\subsection{Installation Methods}
+
+\subsubsection{User Installation}
+\begin{lstlisting}[language=bash]
+# Install to user directory (~/.local/share/BrickGame)
+make install
+
+# Install to custom location
+make install INSTALL_PREFIX=/path/to/custom/location
+\end{lstlisting}
+
+\subsubsection{System-wide Installation}
+\begin{lstlisting}[language=bash]
+# Install system-wide (requires privileges)
+make system-install
+
+# Or manually with CMake
+sudo cmake --install build --prefix /usr/local
+\end{lstlisting}
+
+\subsection{Verifying Installation}
+After installation, verify the installation by running:
+\begin{lstlisting}[language=bash]
+# Test CLI version
+BrickGameCLI --version
+
+# Test desktop version  
+BrickGameDesktop --version
+\end{lstlisting}
+
+\section{Project Structure}
+
+\subsection{Source Code Organization}
+\begin{lstlisting}[basicstyle=\ttfamily\small]
+BrickGame/
+|-- src/
+|   |-- brick_game/
+|   |   |-- snake/          # Snake game library
+|   |   |-- tetris/         # Tetris game library
+|   |-- gui/
+|   |   |-- cli/           # Command-line interface (ncurses)
+|   |   |-- desktop/       # Graphical interface (Qt)
+|   |-- tests/             # Test suites (GTest/Check)
+|-- include/               # Header files
+|-- materials/            # Game assets and resources
+|-- scripts/              # Build and installation scripts
+|-- docs/                 # Documentation
+\end{lstlisting}
+
+\subsection{Build Artifacts}
+\begin{itemize}
+    \item \texttt{build/Release/} - Optimized release binaries
+    \item \texttt{build/Debug/} - Debug binaries with symbols
+    \item \texttt{build/lib/} - Compiled libraries (\texttt{libsnake.a}, \texttt{libtetris.a})
+    \item \texttt{build/bin/} - Executable binaries
+    \item \texttt{build/tests/} - Test executables
+\end{itemize}
+
+\section{Usage}
+
+\subsection{Command Line Interface (ncurses)}
+Run the terminal-based version:
+\begin{lstlisting}[language=bash]
+./build/Release/bin/BrickGameCLI [options]
+\end{lstlisting}
+
+\textbf{Available Options:}
+\begin{itemize}
+    \item \texttt{--game <snake|tetris>} - Select game (default: tetris)
+    \item \texttt{--help} - Show help message
+    \item \texttt{--version} - Display version information
+    \item \texttt{--level <n>} - Start at specific level
+\end{itemize}
+
+\subsection{Desktop Graphical Interface (Qt)}
+Launch the graphical version:
+\begin{lstlisting}[language=bash]
+./build/Release/bin/BrickGameDesktop
+\end{lstlisting}
+
+Or use the desktop application menu after installation.
+
+\subsection{Game Controls}
+
+\subsubsection{Snake Game}
+\begin{itemize}
+    \item \textbf{Arrow Keys} - Change snake direction
+    \item \textbf{Space} - Pause/resume game
+    \item \textbf{ESC} - Exit to main menu
+    \item \textbf{Q} - Quit game
+\end{itemize}
+
+\subsubsection{Tetris Game}
+\begin{itemize}
+    \item \textbf{Arrow Left/Right} - Move piece horizontally
+    \item \textbf{Arrow Down} - Soft drop
+    \item \textbf{Arrow Up} - Rotate piece
+    \item \textbf{Space} - Hard drop
+    \item \textbf{ESC} - Pause/exit
+    \item \textbf{P} - Pause game
+\end{itemize}
+
+\section{Testing}
+
+\subsection{Running Test Suite}
+\begin{lstlisting}[language=bash]
+# Build and run all tests
+make test
+
+# Run specific test suites
+./build/Release/tests/snake/snake_tests
+./build/Release/tests/tetris/tetris_tests
+
+# Run tests with verbose output
+ctest -V
+\end{lstlisting}
+
+\subsection{Code Coverage}
+Generate coverage reports (requires lcov):
+\begin{lstlisting}[language=bash]
+# Install coverage tools (Ubuntu/Debian)
+sudo apt install lcov genhtml
+
+# Generate HTML coverage report
+make coverage
+
+# View coverage report
+xdg-open build/coverage_report/index.html
+\end{lstlisting}
+
+\section{Development}
+
+\subsection{Build Configuration Options}
+The project supports several CMake options:
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Option} & \textbf{Description} \\
+\hline
+\texttt{BUILD\_DESKTOP\_GUI} & Build Qt graphical interface (default: ON) \\
+\hline
+\texttt{BUILD\_CLI\_GUI} & Build ncurses command-line interface (default: ON) \\
+\hline
+\texttt{BUILD\_TESTS} & Build test suites with GTest/Check (default: OFF) \\
+\hline
+\texttt{BUILD\_SNAKE\_LIB} & Build Snake game library (default: ON) \\
+\hline
+\texttt{BUILD\_TETRIS\_LIB} & Build Tetris game library (default: ON) \\
+\hline
+\texttt{ENABLE\_SANITIZER} & Enable AddressSanitizer (default: OFF) \\
+\hline
+\texttt{QT\_VERSION} & Specify Qt version (5 or 6) \\
+\hline
+\end{tabularx}
+
+\subsection{Makefile Targets}
+
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Target} & \textbf{Description} \\
+\hline
+\texttt{all} & Build project (default target) \\
+\hline
+\texttt{release} & Build optimized release version \\
+\hline
+\texttt{debug} & Build debug version with sanitizers \\
+\hline
+\texttt{test} & Build and run all tests \\
+\hline
+\texttt{coverage} & Generate code coverage report \\
+\hline
+\texttt{install} & Install to user directory \\
+\hline
+\texttt{system-install} & Install system-wide \\
+\hline
+\texttt{uninstall} & Remove installed files \\
+\hline
+\texttt{clean} & Remove build directory \\
+\hline
+\texttt{dvi} & Generate documentation \\
+\hline
+\texttt{dist} & Create distribution tarball \\
+\hline
+\texttt{help} & Show available targets \\
+\hline
+\end{tabularx}
+
+\section{Troubleshooting}
+
+\subsection{Common Build Issues}
+
+\subsubsection{CMake Configuration Fails}
+\begin{itemize}
+\item Ensure CMake version is 3.16 or higher: \verb|cmake --version|
+\item Check that C++20 compatible compiler is installed: \verb|g++ --version|
+\item Verify all dependencies are installed (see Section 3)
+\item Clear CMake cache: \verb|rm -rf build && mkdir build|
+\end{itemize}
+
+\subsubsection{Missing Dependencies Errors}
+\begin{lstlisting}[language=bash]
+# If you get "Could NOT find Qt5" or similar errors:
+sudo apt install qtbase5-dev  # For Ubuntu/Debian
+sudo dnf install qt5-qtbase-devel  # For Fedora
+
+# If ncurses is missing:
+sudo apt install libncurses5-dev  # Ubuntu/Debian
+sudo dnf install ncurses-devel    # Fedora
+
+# If GTest is missing:
+sudo apt install libgtest-dev     # Ubuntu/Debian
+sudo dnf install gtest-devel      # Fedora
+\end{lstlisting}
+
+\subsubsection{Linker Errors}
+\begin{itemize}
+\item Ensure development packages are installed (packages ending in \texttt{-dev} or \texttt{-devel})
+\item Check that library paths are correct: \verb|ldconfig -p | grep ncurses|
+\item Verify pkg-config can find packages: \verb|pkg-config --cflags --libs ncurses|
+\end{itemize}
+
+\subsubsection{Runtime Issues}
+\begin{itemize}
+\item \textbf{CLI version not starting}: Check terminal compatibility and ncurses installation
+\item \textbf{Qt version not found}: Set \texttt{QT\_SELECT=5} or \texttt{QT\_SELECT=6} environment variable
+\item \textbf{Permission denied}: Ensure binaries have execute permissions: \verb|chmod +x build/Release/bin/*|
+\end{itemize}
+
+\subsection{Debugging Tips}
+\begin{lstlisting}[language=bash]
+# Build with debug symbols
+make debug
+
+# Run with gdb
+gdb ./build/Debug/bin/BrickGameCLI
+
+# Check shared libraries
+ldd ./build/Release/bin/BrickGameDesktop
+
+# Verbose CMake output
+cmake -B build -DCMAKE_VERBOSE_MAKEFILE=ON
+\end{lstlisting}
+
+\section{License}
+This project is distributed under the terms of the LICENSE file included in the source distribution. See the LICENSE file for complete terms and conditions.
+
+\section{Support}
+For issues, questions, or contributions:
+\begin{itemize}
+    \item Check the project documentation and this file
+    \item Review existing issues in the repository
+    \item Create a new issue with detailed description including:
+    \begin{itemize}
+        \item Linux distribution and version
+        \item Installed dependencies and versions
+        \item Complete error messages
+        \item Steps to reproduce the issue
+    \end{itemize}
+\end{itemize}
+
+\end{document}

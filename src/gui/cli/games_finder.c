@@ -2,7 +2,10 @@
 
 #include <ctype.h>
 #include <dirent.h>
+#include <stdio.h>
 #include <string.h>
+
+#include "path_utils.h"
 
 #define MAX_LEN 256
 #define MAX_NAME_LEN 24
@@ -13,14 +16,23 @@ typedef struct {
   size_t len;
 } NamesStorage_t;
 
-void scanDirectory(Games_t *games);
+void scanDirectory(Games_t *games, const char *libs_path);
 void cleanupName(const char *filename, const char **start, const char **end);
 const char *getSavedName(const char *start, const char *end,
                          NamesStorage_t *names);
+const char *getCleanLibName(const char *filename, NamesStorage_t *names);
+int is_shared_lib(const char *filename);
 
 const Games_t *getAvailableGames() {
-  static Games_t games;
-  scanDirectory(&games);
+  static Games_t games = {0};
+  games.size = 0;  // Reset on each call
+
+  char libs_path[MAX_PATH_LEN];
+
+  if (getLibsPath(libs_path, sizeof(libs_path))) {
+    scanDirectory(&games, libs_path);
+  }
+
   return (const Games_t *)&games;
 }
 
@@ -46,6 +58,7 @@ const char *getSavedName(const char *start, const char *end,
   char *last_name = names->current_name;
   size_t len = end - start;
   size_t remaining_space = MAX_LEN - names->len;
+
   if (len >= remaining_space)
     len = remaining_space - 1;
   else if (len > MAX_NAME_LEN)
@@ -54,7 +67,7 @@ const char *getSavedName(const char *start, const char *end,
   for (size_t i = 0; i < len; ++i) {
     last_name[i] = toupper(start[i]);
   }
-  names->current_name[len] = '\0';
+  last_name[len] = '\0';
   names->current_name += len + 1;
   names->len += len + 1;
   return last_name;
@@ -66,14 +79,17 @@ int is_shared_lib(const char *filename) {
 }
 
 // Scan a directory for shared libraries
-void scanDirectory(Games_t *games) {
+void scanDirectory(Games_t *games, const char *libs_path) {
   static NamesStorage_t names;
   names.current_name = names.names_arr;
+  names.len = 0;
+
   DIR *dir;
-  struct dirent const *entry;
-  if ((dir = opendir(LIBS_PATH))) {
+  const struct dirent *entry;
+
+  if ((dir = opendir(libs_path))) {
     while ((entry = readdir(dir)) != NULL && games->size < MAX_LIBS &&
-           names.len != MAX_LEN) {
+           names.len < MAX_LEN) {
       if (is_shared_lib(entry->d_name)) {
         games->games[games->size++] = getCleanLibName(entry->d_name, &names);
       }

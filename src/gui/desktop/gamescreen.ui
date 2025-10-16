@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GameScreen</class>
+ <widget class="QFrame" name="GameScreen">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::FocusPolicy::StrongFocus</enum>
+  </property>
+  <property name="windowTitle">
+   <string>BrickGame</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* Game screen background */
+      QFrame#GameScreen {
+      background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+      stop:0 #2c3e50, stop:1 #34495e);
+      border: 3px solid #1a2530;
+      border-radius: 12px;
+      }
+
+      QFrame#StatsField {
+      background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+      stop:0 #34495e, stop:1 #2c3e50);
+      border: 2px solid #1a2530;
+      border-radius: 10px;
+      }
+
+      QLabel {
+      color: #ecf0f1;
+      background: transparent;
+      font-weight: bold;
+      font-size: 12px;
+      }
+
+      QLCDNumber {
+      background-color: #1a2530;
+      color: #2ecc71;
+      border: 2px solid #34495e;
+      border-radius: 6px;
+      padding: 2px;
+      }
+
+      QLabel#StatusLabel {
+      color: #e74c3c;
+      font-size: 16px;
+      font-weight: bold;
+      background: rgba(26, 37, 48, 150);
+      border-radius: 8px;
+      padding: 5px;
+      }
+
+      BrickView {
+      background-color: #1a2530;
+      border-radius: 5px;
+      }
+
+      BrickView#FieldView {
+      border: 3px solid #2c3e50;
+      }</string>
+  </property>
+  <property name="inputMethodHints">
+   <set>Qt::InputMethodHint::ImhNone</set>
+  </property>
+  <property name="frameShape">
+   <enum>QFrame::Shape::Box</enum>
+  </property>
+  <property name="frameShadow">
+   <enum>QFrame::Shadow::Plain</enum>
+  </property>
+  <property name="lineWidth">
+   <number>3</number>
+  </property>
+  <widget class="QFrame" name="StatsField">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>230</y>
+     <width>250</width>
+     <height>250</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::Box</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Plain</enum>
+   </property>
+   <property name="midLineWidth">
+    <number>1</number>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="ScoreLabel">
+        <property name="text">
+         <string>Score</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+            <item>
+            <widget class="QLCDNumber" name="ScoreLcdNumber">
+            <property name="digitCount">
+            <number>5</number>
+            </property>
+            <property name="segmentStyle">
+            <enum>QLCDNumber::SegmentStyle::Filled</enum>
+            </property>
+            </widget>
+            </item>
+      </layout>
+      </item>
+      <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+            <widget class="QLabel" name="HighscoreLabel">
+            <property name="text">
+            <string>Highscore</string>
+            </property>
+            <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+            </widget>
+            </item>
+            <item>
+      <widget class="QLCDNumber" name="HighscoreLcdNumber">
+            <property name="digitCount">
+                  <number>5</number>
+            </property>
+            <property name="segmentStyle">
+                  <enum>QLCDNumber::SegmentStyle::Filled</enum>
+            </property>
+      </widget>
+      </item>
+      </layout>
+      </item>
+      <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+      <widget class="QLabel" name="LevelLabel">
+            <property name="text">
+                  <string>Level</string>
+            </property>
+            <property name="alignment">
+                  <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+      </widget>
+      </item>
+      <item>
+      <widget class="QLCDNumber" name="LevelLcdNumber">
+            <property name="digitCount">
+                  <number>5</number>
+            </property>
+            <property name="segmentStyle">
+                  <enum>QLCDNumber::SegmentStyle::Filled</enum>
+            </property>
+      </widget>
+      </item>
+      </layout>
+      </item>
+      <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+      <widget class="QLabel" name="SpeedLabel">
+            <property name="text">
+                  <string>Speed</string>
+            </property>
+            <property name="alignment">
+                  <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+      </widget>
+      </item>
+      <item>
+      <widget class="QLCDNumber" name="SpeedLcdNumber">
+            <property name="digitCount">
+                  <number>5</number>
+            </property>
+            <property name="segmentStyle">
+                  <enum>QLCDNumber::SegmentStyle::Filled</enum>
+            </property>
+      </widget>
+      </item>
+      </layout>
+      </item>
+   </layout>
+  </widget>
+  <widget class="BrickView" name="NextView">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>60</y>
+     <width>120</width>
+     <height>120</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::FocusPolicy::NoFocus</enum>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::Panel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Plain</enum>
+   </property>
+   <property name="lineWidth">
+    <number>0</number>
+   </property>
+  </widget>
+  <widget class="BrickView" name="FieldView">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>9</y>
+     <width>291</width>
+     <height>581</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::FocusPolicy::NoFocus</enum>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Shape::Panel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Shadow::Raised</enum>
+   </property>
+   <property name="lineWidth">
+    <number>0</number>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="sizeAdjustPolicy">
+    <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContentsOnFirstShow</enum>
+   </property>
+   <property name="interactive">
+    <bool>false</bool>
+   </property>
+   <property name="sceneRect">
+    <rectf>
+     <x>0.000000000000000</x>
+     <y>0.000000000000000</y>
+     <width>0.000000000000000</width>
+     <height>0.000000000000000</height>
+    </rectf>
+   </property>
+  </widget>
+  <widget class="QLabel" name="StatusLabel">
+   <property name="geometry">
+    <rect>
+     <x>520</x>
+     <y>500</y>
+     <width>234</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>PAUSE</string>
+   </property>
+   <property name="textFormat">
+    <enum>Qt::TextFormat::PlainText</enum>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignmentFlag::AlignCenter</set>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>BrickView</class>
+   <extends>QGraphicsView</extends>
+   <header>brickview.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

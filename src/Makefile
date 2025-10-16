@@ -1,113 +1,122 @@
-#compilator and linker flags
-CC = gcc
-CFLAGS = -std=c11 -Wall -Werror -Wextra
-NCURSES_FLAGS = -lncurses -lmenu 
-MEM_FLAGS = -g #-fsanitize=address -fsanitize=leak -fsanitize=undefined -fsanitize=unreachable
-COVERAGE_FLAGS = -fprofile-arcs -ftest-coverage
-CHECK_FLAGS = -lcheck -lsubunit -lm
-LINK_FLAGS = -ltetris  -L./$(LIBS_DIR) -Wl,-rpath,'$$ORIGIN'/$(LIBS_DIR)
-
-#source files
-BACKEND_SRC = $(wildcard $(BACKEND_DIR)*.c)
-BACKEND_OBJ = $(BACKEND_SRC:.c=.o)
-FRONTEND_SRC = $(wildcard $(FRONTEND_DIR)*.c)
-TESTS_SRC = $(wildcard $(TESTS_DIR)*.c)
-
-#paths and names of objects
-BACKEND_DIR = brick_game/tetris/
-TESTS_DIR = $(BACKEND_DIR)tests/
-DATA= data/
-LIBS_DIR = $(DATA)libs/
-BIN = $(DATA)bin/
-SAVES= $(DATA)saves
-FRONTEND_DIR = gui/cli/
-GAME_NAME = BrickGame_v1.0
-GAME= $(BIN)$(GAME_NAME)
-GAME_LIB = $(LIBS_DIR)libtetris.so
-TEST = test.out
-ICON = brick_game.png
-INSTALL = install.sh
-TESTS_DIR = $(BACKEND_DIR)tests/
-INSTALL_PATH = /home/$$USER/Games/
-INSTALL_DIR = $(INSTALL_PATH)$(GAME_NAME)/
-SAVES_DIR = ./saves
-DIST = $(GAME_NAME).tar.gz
-DOXY = Doxyfile
-DOC_DIR = docs/
-GCOV_DIR = gcov_misc
-REPORT_DIR = report
+# Root Makefile for the Brick Game project
+DATA = ../build
+MISC = ../misk
+LIBS_DIR = $(DATA)/libs
+BIN = $(DATA)/bin
+SAVES = $(DATA)/saves
+INSTALL_PATH = /home/$$USER/Games
+ICON = $(MISC)/brick_game.png
+INSTALL = ../scripts/install.sh
+DOXY = $(MISC)/Doxyfile
+DOC_DIR = $(DATA)/docs
+GCOV_DIR = $(DATA)/gcov_misc
+REPORT_DIR = $(DATA)/coverage_report
 INFO = coverage.info
-GCDA_GCNO = $(BACKEND_DIR)*.gc*  *.gc*
+V_SUPPRESS = $(MISC)/valgrind.supp
 
 
-all: dvi install gcov_report 
+.PHONY: all snake tetris cli desktop test test_snake test_tetris clean install uninstall dvi dist gcov_report valgrind cppcheck clang folders
 
-play: $(GAME)
-	@./$(GAME)
+# Default target - build everything available
+all: folders snake tetris cli desktop
+	echo $(SAVE_PATH)
 
-$(GAME): $(GAME_LIB)
-	$(CC) $(FRONTEND_SRC) -o $@ $(CFLAGS) $(MEM_FLAGS) $(NCURSES_FLAGS)
 
-$(GAME_LIB): $(BACKEND_OBJ) | folders
-	$(CC) -shared $^ -o $@ $(CFLAGS) $(MEM_FLAGS)
+# Create necessary directories
+folders:
+	@mkdir -p -m 755 $(DATA) $(LIBS_DIR) $(BIN) $(SAVES)
+	@echo "Created directories: $(DATA), $(LIBS_DIR), $(BIN), $(SAVES)"
 
-folders: 
-	@mkdir -p $(LIBS_DIR) $(BIN) $(SAVES)
+# Build specific modules
+snake:
+	$(MAKE) -C brick_game/snake LIBS_DIR=../../$(LIBS_DIR) 
 
-%.o: %.c
-	@$(CC) -c -fPIC $< -o $@ $(CFLAGS) $(MEM_FLAGS)
+tetris:
+	$(MAKE) -C brick_game/tetris LIBS_DIR=../../$(LIBS_DIR)
+cli:
+	$(MAKE) -C gui/cli BIN=../../$(BIN) LIBS_DIR=../../$(LIBS_DIR)
 
-install: $(GAME)
+# Desktop GUI build using CMake
+desktop:
+	@echo "Building desktop GUI with CMake..."
+	@mkdir -p gui/desktop/build
+	@cd gui/desktop/build && \
+	 cmake .. && \
+	 $(MAKE) -j$(nproc)
+	@cp gui/desktop/build/desktop $(BIN)/BrickGameDesktop 2>/dev/null || \
+	 echo "Desktop executable built but not copied to bin (may need manual installation)"
+
+# Test targets
+test: test_snake test_tetris
+
+test_snake:
+	$(MAKE) -C brick_game/snake test
+
+test_tetris:
+	$(MAKE) -C brick_game/tetris test
+
+# Global targets
+install: all
 	@chmod +x $(INSTALL)
-	@./$(INSTALL) $(GAME_NAME) $(INSTALL_DIR) $(DATA) $(ICON)
-	@echo game installed at $(INSTALL_DIR) and available at desktop
+	@./$(INSTALL) $(DATA) $(ICON) $(INSTALL_PATH)
+	@echo "Games installed at $(INSTALL_PATH)"
 
 uninstall:
-	@rm -f $$HOME/Desktop/$(GAME_NAME).desktop $$HOME/.local/share/konsole/$(GAME_NAME).profile
-	@rm -rf $(INSTALL_DIR)
-	@echo game deleted
-
-clean:
-	rm -f $(BACKEND_OBJ) $(GAME_LIB) $(GAME) $(TEST) $(DIST) $(TRASH) $(INFO) 
-	rm -rf $(DATA) $(REPORT_DIR) $(GCOV_DIR) $(DOC_DIR)
+	@rm -f $$HOME/Desktop/BrickGame*.desktop $$HOME/.local/share/konsole/BrickGame*.profile
+	@rm -rf $(INSTALL_PATH)BrickGame*
+	@echo "Games uninstalled"
 
 dvi:
 	@mkdir -p $(DOC_DIR)
 	-@doxygen $(DOXY) >/dev/null 2>&1
-	@open $(DOC_DIR)html/index.html
+	@open $(DOC_DIR)html/index.html 2>/dev/null || echo "Documentation generated at $(DOC_DIR)"
 
 dist:
-	@mkdir -p $(GAME_NAME)
-	@cp -r $(BACKEND_DIR) $(FRONTEND_DIR) $(INSTALL) $(ICON) $(DOXY) Makefile $(GAME_NAME)/
-	@tar -czvf $(DIST) ./$(GAME_NAME)/
-	@rm -rf ./$(GAME_NAME)/
+	@mkdir -p BrickGame
+	@cp -r brick_game gui Makefile $(INSTALL) $(ICON) $(DOXY) BrickGame/
+	@tar -czvf BrickGame.tar.gz ./BrickGame/
+	@rm -rf ./BrickGame/
 
-test: CFLAGS += $(COVERAGE_FLAGS)
-test: $(TEST)
-	-@./$(TEST)
-	@mkdir -p $(GCOV_DIR)
-	-@mv $(GCDA_GCNO) $(GCOV_DIR) 
+clean:
+	$(MAKE) -C brick_game/snake clean
+	$(MAKE) -C brick_game/tetris clean
+	$(MAKE) -C gui/cli clean
+	@# Clean CMake build
+	rm -rf gui/desktop/build
+	@# Clean root directories
+	rm -rf $(DATA) $(DOC_DIR) $(REPORT_DIR) $(GCOV_DIR) BrickGame.tar.gz
 
+# Desktop-specific clean
+clean_desktop:
+	rm -rf gui/desktop/build
 
-$(TEST): $(GAME_LIB)
-	$(CC) $(TESTS_SRC) -o $(TEST) $(CFLAGS) $(CHECK_FLAGS) $(LINK_FLAGS)
+gcov_report:
+	$(MAKE) -C brick_game/snake gcov_report
+	$(MAKE) -C brick_game/tetris gcov_report
 
+valgrind_snake:
+	$(MAKE) -C brick_game/snake valgrind
 
-$(REPORT_DIR)/index.html: test
-	-@lcov -q -t $(GAME_NAME) -o $(INFO) -c -d $(GCOV_DIR) >/dev/null 2>&1 
-	-@lcov --remove $(INFO) '$(BACKEND_DIR)tests/*' -o $(INFO) >/dev/null 2>&1
-	-@genhtml -q $(INFO) -o $(REPORT_DIR)  >/dev/null
-	
-gcov_report : $(REPORT_DIR)/index.html
-	@open $(REPORT_DIR)/index.html >/dev/null 2>&1
-
-valgrind: $(GAME)
-	valgrind --track-origins=yes --leak-check=full --show-reachable=no --suppressions=./ncurses.supp ./$(GAME)
+valgrind_tetris:
+	$(MAKE) -C brick_game/tetris valgrind
 
 cppcheck:
-	cppcheck --check-level=exhaustive --enable=all --suppress=missingIncludeSystem  .
+	cppcheck --check-level=exhaustive --enable=all --suppress=missingIncludeSystem brick_game/ gui/
 
 clang:
-	find . -name '*.c' -o -name '*.h' | xargs clang-format -n --style=Google
+	find . -name '*.c' -o -name '*.h' -o -name '*.cc' -o -name '*.hpp' | xargs clang-format -n --style=Google
 
-.PHONY: all install uninstall clean dvi dist test gcov_report valgrind clang
+# Desktop-specific targets
+desktop_rebuild: clean_desktop desktop
+
+desktop_debug:
+	@mkdir -p gui/desktop/build
+	@cd gui/desktop/build && \
+	 cmake -DCMAKE_BUILD_TYPE=Debug .. && \
+	 $(MAKE) -j$(nproc)
+
+desktop_release:
+	@mkdir -p gui/desktop/build
+	@cd gui/desktop/build && \
+	 cmake -DCMAKE_BUILD_TYPE=Release .. && \
+	 $(MAKE) -j$(nproc)
