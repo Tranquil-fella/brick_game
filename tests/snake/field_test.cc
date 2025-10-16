@@ -14,7 +14,7 @@ class FieldTest : public ::testing::Test {
     // Clean up if needed
   }
 
-  s21::Field field;
+  brick_game::Field field;
 };
 
 TEST_F(FieldTest, GetNthFreeCell_EmptyField) {

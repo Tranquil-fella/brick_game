@@ -8,7 +8,7 @@
 #include "backend.h"
 #include "mediator.h"
 
-namespace s21 {
+namespace brick_game {
 using namespace std::chrono_literals;
 using msec = std::chrono::milliseconds;
 constexpr msec kStartDelay = 500ms;
@@ -88,5 +88,5 @@ struct MoveTimer : public Component {
     paused.notify_one();
   }
 };
-};  // namespace s21
+};  // namespace brick_game
 #endif

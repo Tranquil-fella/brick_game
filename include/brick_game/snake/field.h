@@ -6,7 +6,7 @@
 #include "backend.h"
 #include "colors.h"
 
-namespace s21 {
+namespace brick_game {
 
 struct Cell : public std::pair<int, int> {
   Cell(int f = 0, int s = 0) : std::pair<int, int>(f, s) {}
@@ -92,6 +92,6 @@ struct Field {
   }
 };
 
-}  // namespace s21
+}  // namespace brick_game
 
 #endif

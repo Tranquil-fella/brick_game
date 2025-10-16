@@ -7,7 +7,7 @@
 
 #include "backend.h"
 
-using namespace s21;
+using namespace brick_game;
 
 class BackendTest : public ::testing::Test {
  protected:

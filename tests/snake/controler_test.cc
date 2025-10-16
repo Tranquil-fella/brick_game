@@ -8,7 +8,7 @@ template <typename Model>
 struct ControlerTestImpl;
 #define TEST_FRIEND friend struct ControlerTestImpl<Model>;
 #include "controler.h"
-using namespace s21;
+using namespace brick_game;
 
 struct MockModel {
   void TakeMoveAction(MovementAction a) {
@@ -36,7 +36,7 @@ struct MockModel {
 
 template <typename Model>
 struct ControlerTestImpl {
-  s21::Controler<Model>& controller_ = s21::Controler<Model>::GetInstance();
+  brick_game::Controler<Model>& controller_ = brick_game::Controler<Model>::GetInstance();
   Model& GetModel() { return controller_.model_; }
 };
 
@@ -48,7 +48,7 @@ class ControlerTest : public ::testing::Test {
 
 // Test concept satisfaction
 TEST_F(ControlerTest, MockModelSatisfiesConcept) {
-  static_assert(s21::BrickGameModel<MockModel>,
+  static_assert(brick_game::BrickGameModel<MockModel>,
                 "MockModel should satisfy BrickGameModel concept");
 }
 

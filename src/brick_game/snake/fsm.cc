@@ -9,7 +9,7 @@ static const std::bitset<12> fsm_control_bitset{
     "001"  // Start
 };
 
-bool s21::SnakeFSM::IsCorrectStateForExecution(ControlAction a) {
+bool brick_game::SnakeFSM::IsCorrectStateForExecution(ControlAction a) {
   State curr = state_;
   return fsm_control_bitset[static_cast<unsigned int>(curr) * 3 +
                             static_cast<unsigned int>(a)];

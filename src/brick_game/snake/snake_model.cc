@@ -1,6 +1,6 @@
 #include "snake_model.h"
 
-s21::SnakeModel::SnakeModel()
+brick_game::SnakeModel::SnakeModel()
     : mediator_(std::make_shared<SnakeMediator>()),
       fsm_(std::make_shared<SnakeFSM>(mediator_)),
       snake_(std::make_shared<Snake>(mediator_)),
@@ -10,12 +10,12 @@ s21::SnakeModel::SnakeModel()
   Connect();
 }
 
-void s21::SnakeModel::TakeMoveAction(MovementAction a) {
+void brick_game::SnakeModel::TakeMoveAction(MovementAction a) {
   if (fsm_->IsState(State::Moving)) {
     snake_->Move(a);
   }
 }
-void s21::SnakeModel::TakeGameControlAction(ControlAction a) {
+void brick_game::SnakeModel::TakeGameControlAction(ControlAction a) {
   if (fsm_->IsCorrectStateForExecution(a)) {
     switch (a) {
       case ControlAction::Start:
@@ -35,7 +35,7 @@ void s21::SnakeModel::TakeGameControlAction(ControlAction a) {
     }
   }
 }
-GameInfo_t s21::SnakeModel::GetCurrentStateCopy() {
+GameInfo_t brick_game::SnakeModel::GetCurrentStateCopy() {
   GameInfo_t info{};
   snake_->PlaceGameInfo(info, fsm_->IsState(State::Gameover));
   stats_keeper_->PlaceStats(info, fsm_->IsState(State::Gameover));
@@ -43,7 +43,7 @@ GameInfo_t s21::SnakeModel::GetCurrentStateCopy() {
   return info;
 }
 
-void s21::SnakeModel::Connect() {
+void brick_game::SnakeModel::Connect() {
   fsm_->AddObserver(mediator_->GetObserverPtr());
   fsm_->SetState(State::Start);
   mediator_->AddSubscriber(snake_->weak_from_this(), Event::TimeToMove);
@@ -55,7 +55,7 @@ void s21::SnakeModel::Connect() {
   mediator_->AddSubscriber(fsm_->weak_from_this(), Event::GameOver);
 }
 
-void s21::SnakeModel::Reset() {
+void brick_game::SnakeModel::Reset() {
   fsm_->SetState(State::Start);
   *snake_ = Snake(mediator_);
   *stats_keeper_ = StatsKeeper<SimpleFileStorage>(mediator_);

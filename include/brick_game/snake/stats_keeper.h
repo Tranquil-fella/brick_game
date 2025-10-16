@@ -6,7 +6,7 @@
 #include "backend.h"
 #include "mediator.h"
 
-namespace s21 {
+namespace brick_game {
 template <typename DataStorage>
 concept IsDataStorage = requires(DataStorage ds) {
   { ds.ReadHighscore() } -> std::same_as<int>;
@@ -85,5 +85,5 @@ struct StatsKeeper : public Component, public DataStorage {
   }
 };
 
-};  // namespace s21
+};  // namespace brick_game
 #endif

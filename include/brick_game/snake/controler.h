@@ -1,5 +1,5 @@
-#ifndef S21_CONTROLER_H
-#define S21_CONTROLER_H
+#ifndef BRICK_GAME_CONTROLER_H
+#define BRICK_GAME_CONTROLER_H
 
 #ifndef TEST_FRIEND
 #define TEST_FRIEND
@@ -11,7 +11,7 @@
 #include "input_mapping.h"
 #include "mediator.h"
 
-namespace s21 {
+namespace brick_game {
 // Концепт для ограничения интерфейса модели
 template <typename Model>
 concept BrickGameModel =
@@ -58,5 +58,5 @@ struct Controler {
   ActionAssigner assigner_{this};
 };
 
-};  // namespace s21
+};  // namespace brick_game
 #endif

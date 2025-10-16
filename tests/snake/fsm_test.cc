@@ -4,7 +4,7 @@
 
 #include "input_mapping.h"
 
-namespace s21 {
+namespace brick_game {
 
 class SnakeFSMTest : public ::testing::Test {
  protected:
@@ -146,4 +146,4 @@ TEST_F(SnakeFSMTest, ProcessEventTransitionsToGameover) {
   EXPECT_EQ(fsm->GetState(), State::Gameover);
 }
 
-}  // namespace s21
+}  // namespace brick_game

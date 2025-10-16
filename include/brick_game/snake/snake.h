@@ -9,7 +9,7 @@
 #include "input_mapping.h"
 #include "mediator.h"
 
-namespace s21 {
+namespace brick_game {
 
 struct Direction {
   Direction(MovementAction v = MovementAction::Up) : direction_(v) {}
@@ -69,6 +69,6 @@ struct Snake : public Component {
   bool IsCollision();
 };
 
-};  // namespace s21
+};  // namespace brick_game
 
 #endif

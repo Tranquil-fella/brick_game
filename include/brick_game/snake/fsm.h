@@ -7,7 +7,7 @@
 #include "mediator.h"
 #include "observable.h"
 
-namespace s21 {
+namespace brick_game {
 
 enum class State { Start, Pause, Gameover, Moving };
 
@@ -41,5 +41,5 @@ struct SnakeFSM : public Observable<SnakeFSM>, public Component {
   std::atomic<State> state_{};
 };
 
-};  // namespace s21
+};  // namespace brick_game
 #endif

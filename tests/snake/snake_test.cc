@@ -5,7 +5,7 @@
 #include <memory>
 #include <thread>
 
-using namespace s21;
+using namespace brick_game;
 
 // Simple test mediator that tracks notifications
 class TestMediator : public Mediator {

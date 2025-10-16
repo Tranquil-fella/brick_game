@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 
-namespace s21 {
+namespace brick_game {
 struct SimpleFileStorage {
  private:
   std::filesystem::path GetSaveFilePath() {
@@ -66,5 +66,5 @@ struct SimpleFileStorage {
     file.close();
   }
 };
-}  // namespace s21
+}  // namespace brick_game
 #endif

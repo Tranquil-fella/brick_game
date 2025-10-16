@@ -9,7 +9,7 @@
 
 #include "backend.h"
 
-using namespace s21;
+using namespace brick_game;
 
 template <int I = 0>
 class MockDataStorage {

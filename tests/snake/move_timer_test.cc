@@ -6,7 +6,7 @@
 #include <chrono>
 #include <thread>
 
-using namespace s21;
+using namespace brick_game;
 
 // Test Mediator to track notifications
 class TestMediator : public Mediator {

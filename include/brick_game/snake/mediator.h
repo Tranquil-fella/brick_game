@@ -7,7 +7,7 @@
 
 #include "events.h"
 
-namespace s21 {
+namespace brick_game {
 
 struct Mediator;
 
@@ -52,6 +52,6 @@ struct Mediator {
   }
 };
 
-};  // namespace s21
+};  // namespace brick_game
 
 #endif

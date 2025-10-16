@@ -12,7 +12,7 @@
 #include "snake.h"
 #include "stats_keeper.h"
 
-namespace s21 {
+namespace brick_game {
 
 struct SnakeMediator : public Observer<SnakeFSM>, public Mediator {
   ~SnakeMediator() override = default;
@@ -46,5 +46,5 @@ struct SnakeModel {
   void Connect();
   void Reset();
 };
-};  // namespace s21
+};  // namespace brick_game
 #endif

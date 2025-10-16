@@ -6,7 +6,7 @@
 
 #include "backend.h"
 
-namespace s21 {
+namespace brick_game {
 enum class MovementAction { Left, Right, Up, Down, Action };
 enum class ControlAction { Start, Pause, Terminate };
 
@@ -24,6 +24,6 @@ inline std::variant<MovementAction, ControlAction> MapUserInput(
   return input;
 }
 
-}  // namespace s21
+}  // namespace brick_game
 
 #endif

@@ -4,7 +4,7 @@
 
 #include "input_mapping.h"
 
-using namespace s21;
+using namespace brick_game;
 
 class InputDeductionTest : public ::testing::Test {
  protected:

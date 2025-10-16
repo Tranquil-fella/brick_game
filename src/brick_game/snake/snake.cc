@@ -2,7 +2,7 @@
 #include "snake.h"
 
 #include <random>
-namespace s21 {
+namespace brick_game {
 
 Snake::Snake(std::shared_ptr<Mediator> m) : Component::Component(m) {
   InitializeSnake();
@@ -127,4 +127,4 @@ void Snake::PlaceGameInfo(GameInfo_t& gi, bool gameover) {
 
 void Snake::ProcessEvent(Event) { Move(MovementAction::Action, false); }
 
-};  // namespace s21
+};  // namespace brick_game
